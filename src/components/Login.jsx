@@ -1,11 +1,17 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import { useForm } from 'react-hook-form';
+import { useHistory } from 'react-router-dom';
+import { UserContext } from '../context/userContext';
 
 export default function Login() {
     const { register, handleSubmit, formState: { errors } } = useForm();
+    const { isLogged, setAuth } = useContext(UserContext);
+    const redirect = useHistory();
 
     const onSubmit = (data) => {
-        console.log(data);
+        // console.log(data);
+        setAuth();
+        redirect.push("/");
     }
 
     return (
@@ -32,7 +38,12 @@ export default function Login() {
                 {...register("password", { required: "Please enter your password", minLength: 6 })}
             />
             <li className="text-danger list-unstyled">{errors.password?.message /* && errors.password.message*/ }</li>
-            <button type="submit" className="btn btn-primary mt-3">Login</button>
+            {isLogged ? (
+                <div className="btn btn-danger mt-3" onClick={onSubmit}>Logout</div>
+            ) : (
+                <button type="submit" className="btn btn-primary mt-3">Login</button>
+            )}
+            
         </form>
     )
 }

@@ -1,9 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
+import { Link } from 'react-router-dom';
+import { UserContext } from '../context/userContext';
 
 export default function Home() {
     const [pokemon, setPokemon] = useState(null);
     const [loading, setLoading] = useState(true);
     const [id, setId] = useState(1);
+    const { isLogged } = useContext(UserContext);
 
     useEffect(() => {
         fetch(`https://pokeapi.co/api/v2/pokemon/${id}`)
@@ -18,8 +21,16 @@ export default function Home() {
     function randomNumber() {
         return Math.floor(Math.random() * 151) + 1;
     }
+
     
-    return (
+
+    const loginRender = (
+        <Link to="/login">
+            <h1 className="text-center mt-4">You should login first !</h1>
+        </Link>
+    ) 
+
+    const pokemonRender = (
         <div>
             {pokemon === null && loading === true ? (
                 <div className="spinner-border text-primary" role="status"/>
@@ -45,4 +56,10 @@ export default function Home() {
             )}
         </div>
     );
+
+    if (isLogged) {
+        return pokemonRender;
+    } else {
+        return loginRender;
+    }
 }
